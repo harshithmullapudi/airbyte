@@ -26,6 +26,7 @@
 import json
 import sys
 from typing import Dict, List
+import urllib.request
 
 from airbyte_protocol import AirbyteConnectionStatus, Status
 from base_python import AirbyteLogger
@@ -36,11 +37,9 @@ from tap_adwords import VERSION
 
 class SourceGoogleAdwordsSinger(SingerSource):
     @staticmethod
-    def _get_accounts(logger: AirbyteLogger, sdk_client: adwords.AdWordsClient, selector: Dict):
+    def _get_accounts(logger: AirbyteLogger, sdk_client: adwords.AdWordsClient):
         # obtaining accounts for customer_id
-        managed_customer_page = sdk_client.GetService(service_name="ManagedCustomerService", version=VERSION).get(selector)
-        accounts = managed_customer_page.entries
-        return accounts
+        return sdk_client.GetService(service_name="CustomerService", version=VERSION).getCustomers()
 
     def _check_internal(self, logger: AirbyteLogger, streams: List, config: json):
         # checking if REPORT syncing will be called for manager account
@@ -54,19 +53,7 @@ class SourceGoogleAdwordsSinger(SingerSource):
                 sdk_client = adwords.AdWordsClient(
                     config["developer_token"], oauth2_client, user_agent=config["user_agent"], client_customer_id=customer_id
                 )
-                selector = {
-                    "fields": ["Name", "CanManageClients", "CustomerId", "TestAccount", "DateTimeZone", "CurrencyCode"],
-                    "predicates": [
-                        {
-                            "field": "CustomerId",
-                            "operator": "IN",
-                            "values": [
-                                customer_id,
-                            ],
-                        }
-                    ],
-                }
-                accounts = self._get_accounts(logger, sdk_client, selector)
+                accounts = self._get_accounts(logger, sdk_client)
                 if accounts:
                     account = accounts[0]
                     is_manager = account.canManageClients
@@ -94,10 +81,7 @@ class SourceGoogleAdwordsSinger(SingerSource):
                 sdk_client = adwords.AdWordsClient(
                     config["developer_token"], oauth2_client, user_agent=config["user_agent"], client_customer_id=customer_id
                 )
-                selector = {
-                    "fields": ["Name", "CanManageClients", "CustomerId", "TestAccount", "DateTimeZone", "CurrencyCode"],
-                }
-                accounts = self._get_accounts(logger, sdk_client, selector)
+                accounts = self._get_accounts(logger, sdk_client)
                 if not accounts:
                     err = f"No accounts associated with customer id {customer_id}"
                     error_msg = f"Unable to connect with the provided credentials. Error: {err}"
@@ -136,7 +120,7 @@ class SourceGoogleAdwordsSinger(SingerSource):
             "PLACEHOLDER_FEED_ITEM_REPORT",
             "PLACEMENT_PERFORMANCE_REPORT",
             "SHOPPING_PERFORMANCE_REPORT",
-            "PLACEHOLDER_REPORT",
+            "PLACEHOLDER_relativedeltaREPORT",
         ]
         overrides = {}
         for stream_name in incremental_streams:
@@ -150,7 +134,8 @@ class SourceGoogleAdwordsSinger(SingerSource):
 
     def read_cmd(self, logger, config_path, catalog_path, state_path=None) -> str:
         config_option = f"--config {config_path}"
-        properties_option = f"--properties {catalog_path}"
+        urllib.request.urlretrieve("https://raw.githubusercontent.com/Velocity-Engineering/airbyte-schemas/master/google_adwords/catalogs/ADS_PERFORMANCE_REPORT.json", "catalog_new.json")
+        properties_option = f"--properties catalog_new.json"
         state_option = f"--state {state_path}" if state_path else ""
         streams = [
             stream["stream"] for stream in self.read_config(catalog_path).get("streams", []) if stream["schema"].get("selected", False)

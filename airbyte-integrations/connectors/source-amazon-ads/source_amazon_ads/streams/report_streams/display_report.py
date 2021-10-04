@@ -86,4 +86,5 @@ class SponsoredDisplayReportStream(ReportStream):
             # Only for most common T00020 tactic for now
             "tactic": Tactics.T00020,
             "metrics": ",".join(self.metrics_map[record_type]),
+            "reportName": "sponsored_display_report_stream"
         }

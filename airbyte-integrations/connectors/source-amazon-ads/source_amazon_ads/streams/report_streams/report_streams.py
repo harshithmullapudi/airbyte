@@ -38,7 +38,7 @@ import pendulum
 import pytz
 import requests
 from airbyte_cdk.logger import AirbyteLogger
-from airbyte_cdk.models import SyncMode
+from airbyte_cdk.models.airbyte_protocol import SyncMode, AirbyteStateMessage, AirbyteMessage, Status, Type
 from airbyte_cdk.sources.streams.http.auth import Oauth2Authenticator
 from pydantic import BaseModel
 from source_amazon_ads.schemas import CatalogModel, MetricsReport, Profile
@@ -77,6 +77,7 @@ class ReportInfo:
     report_id: str
     profile_id: int
     record_type: str
+    report_name: str
 
 
 class TooManyRequests(Exception):
@@ -152,7 +153,15 @@ class ReportStream(BasicAmazonAdsStream, ABC):
                     raise Exception(f"Report for {report_info.profile_id} with {report_info.record_type} type generation failed")
                 elif report_status == Status.SUCCESS:
                     metric_objects = self._download_report(report_info, download_url)
+                    if not metric_objects:
+                        state = {}
+                        # print(report_info)
+                        # now = datetime.utcnow()
+                        state[report_info.report_name] = report_date
+                        yield AirbyteMessage(type=Type.STATE, state=AirbyteStateMessage(data=state))
                     for metric_object in metric_objects:
+                        print(f"metrics_object: {metric_object}")
+                        logger.info(f"report_date: {report_date}, report_name: {report_info}")
                         yield self._model(
                             profileId=report_info.profile_id,
                             recordType=report_info.record_type,
@@ -258,7 +267,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         self, sync_mode: SyncMode, cursor_field: List[str] = None, stream_state: Mapping[str, Any] = None
     ) -> Iterable[Optional[Mapping[str, Any]]]:
         # Amazon ads updates the data for the next 3 days
-        LOOK_BACK_WINDOW = 3
+        LOOK_BACK_WINDOW = 5
 
         if sync_mode == SyncMode.full_refresh:
             # For full refresh stream use date from config start_date field.
@@ -276,7 +285,13 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         return [{self.cursor_field: date} for date in ReportStream.get_report_date_ranges(start_date)] or [None]
 
     def get_updated_state(self, current_stream_state: Dict[str, Any], latest_data: Mapping[str, Any]) -> Mapping[str, Any]:
-        return {"reportDate": latest_data["reportDate"]}
+        # print(f'current_stream_state: {current_stream_state}')
+        logger.info(f"current_stream_state: {current_stream_state}")
+        if latest_data["reportDate"]:
+            return {"reportDate": latest_data["reportDate"]}
+        else:
+            now = datetime.utcnow()
+            return {"reportDate": now.strftime(ReportStream.REPORT_DATE_FORMAT)}
 
     @abstractmethod
     def _get_init_report_body(self, report_date: str, record_type: str, profile) -> Dict[str, Any]:
@@ -296,6 +311,8 @@ class ReportStream(BasicAmazonAdsStream, ABC):
                 metric_date = self._calc_report_generation_date(report_date, profile)
 
                 report_init_body = self._get_init_report_body(metric_date, record_type, profile)
+                report_name = report_init_body['reportName']
+                report_init_body.pop('reportName', None)
                 if not report_init_body:
                     continue
                 # Some of the record types has subtypes. For example asins type
@@ -321,6 +338,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
                         report_id=response.reportId,
                         record_type=record_type,
                         profile_id=profile.profileId,
+                        report_name=report_name
                     )
                 )
                 logger.info("Initiated successfully")

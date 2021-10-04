@@ -110,6 +110,7 @@ class SourceAmazonAds(AbstractSource):
             SponsoredBrandsReportStream,
             SponsoredBrandsVideoReportStream,
         ]
+        # non_profile_stream_classes = [SponsoredDisplayProductAds, SponsoredBrandsVideoReportStream]
         return [profiles_stream, *[stream_class(**stream_args) for stream_class in non_profile_stream_classes]]
 
     def spec(self, *args) -> ConnectorSpecification:

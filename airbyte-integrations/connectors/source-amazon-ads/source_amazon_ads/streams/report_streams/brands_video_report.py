@@ -60,5 +60,6 @@ class SponsoredBrandsVideoReportStream(ReportStream):
         body = {
             "reportDate": report_date,
             "creativeType": "video",
+            "reportName": "sponsored_brands_video_report_stream"
         }
         return {**body, "metrics": ",".join(metrics_list)}

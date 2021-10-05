@@ -82,6 +82,7 @@ class SponsoredProductsReportStream(ReportStream):
         metrics_list = self.metrics_map[record_type]
         body = {
             "reportDate": report_date,
+            "reportName": "sponsored_products_report_stream"
         }
         if RecordType.ASINS in record_type:
             body["campaignType"] = "sponsoredProducts"

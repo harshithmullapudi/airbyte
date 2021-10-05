@@ -155,9 +155,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
                     metric_objects = self._download_report(report_info, download_url)
                     if not metric_objects:
                         state = {}
-                        # print(report_info)
-                        # now = datetime.utcnow()
-                        state[report_info.report_name] = report_date
+                        state[report_info.report_name] = {"reportDate": report_date}
                         yield AirbyteMessage(type=Type.STATE, state=AirbyteStateMessage(data=state))
                     for metric_object in metric_objects:
                         print(f"metrics_object: {metric_object}")
@@ -285,13 +283,11 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         return [{self.cursor_field: date} for date in ReportStream.get_report_date_ranges(start_date)] or [None]
 
     def get_updated_state(self, current_stream_state: Dict[str, Any], latest_data: Mapping[str, Any]) -> Mapping[str, Any]:
-        # print(f'current_stream_state: {current_stream_state}')
         logger.info(f"current_stream_state: {current_stream_state}")
-        if latest_data["reportDate"]:
+        if "reportDate" in latest_data and latest_data["reportDate"]:
             return {"reportDate": latest_data["reportDate"]}
         else:
-            now = datetime.utcnow()
-            return {"reportDate": now.strftime(ReportStream.REPORT_DATE_FORMAT)}
+            return {"reportDate": current_stream_state['reportDate']}
 
     @abstractmethod
     def _get_init_report_body(self, report_date: str, record_type: str, profile) -> Dict[str, Any]:

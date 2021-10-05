@@ -69,5 +69,6 @@ class SponsoredBrandsReportStream(ReportStream):
         metrics_list = self.metrics_map[record_type]
         body = {
             "reportDate": report_date,
+            "reportName": "sponsored_brands_report_stream"
         }
         return {**body, "metrics": ",".join(metrics_list)}

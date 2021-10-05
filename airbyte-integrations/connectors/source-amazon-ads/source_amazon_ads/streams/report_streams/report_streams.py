@@ -30,20 +30,35 @@ from datetime import datetime, timedelta
 from enum import Enum
 from gzip import decompress
 from http import HTTPStatus
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 from urllib.parse import urljoin
+from typing import Any, Dict, Iterator, List, Mapping, MutableMapping, Optional, Tuple, Iterable
 
 import backoff
 import pendulum
 import pytz
 import requests
 from airbyte_cdk.logger import AirbyteLogger
+from airbyte_cdk.models import (
+    AirbyteCatalog,
+    AirbyteConnectionStatus,
+    AirbyteMessage,
+    AirbyteRecordMessage,
+    AirbyteStateMessage,
+    AirbyteStream,
+    ConfiguredAirbyteCatalog,
+    ConfiguredAirbyteStream,
+    Status,
+    SyncMode,
+)
 from airbyte_cdk.models.airbyte_protocol import SyncMode, AirbyteStateMessage, AirbyteMessage, Status, Type
 from airbyte_cdk.sources.streams.http.auth import Oauth2Authenticator
 from pydantic import BaseModel
 from source_amazon_ads.schemas import CatalogModel, MetricsReport, Profile
 from source_amazon_ads.spec import AmazonAdsConfig
 from source_amazon_ads.streams.common import BasicAmazonAdsStream
+from airbyte_cdk.sources.streams import Stream
+from airbyte_cdk.sources.streams.http.http import HttpStream
+from airbyte_cdk.sources.utils.schema_helpers import InternalConfig, split_config
 
 logger = AirbyteLogger()
 
@@ -153,12 +168,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
                     raise Exception(f"Report for {report_info.profile_id} with {report_info.record_type} type generation failed")
                 elif report_status == Status.SUCCESS:
                     metric_objects = self._download_report(report_info, download_url)
-                    if not metric_objects:
-                        state = {}
-                        state[report_info.report_name] = {"reportDate": report_date}
-                        yield AirbyteMessage(type=Type.STATE, state=AirbyteStateMessage(data=state))
                     for metric_object in metric_objects:
-                        print(f"metrics_object: {metric_object}")
                         logger.info(f"report_date: {report_date}, report_name: {report_info}")
                         yield self._model(
                             profileId=report_info.profile_id,
@@ -284,10 +294,13 @@ class ReportStream(BasicAmazonAdsStream, ABC):
 
     def get_updated_state(self, current_stream_state: Dict[str, Any], latest_data: Mapping[str, Any]) -> Mapping[str, Any]:
         logger.info(f"current_stream_state: {current_stream_state}")
+        # if "reportDate" in latest_data and latest_data["reportDate"]:
+        #     return {"reportDate": latest_data["reportDate"]}
+        # if "reportDate" in current_stream_state and current_stream_state["reportDate"]:
+        #     return {"reportDate": current_stream_state['reportDate']}
+        # else:
         if "reportDate" in latest_data and latest_data["reportDate"]:
             return {"reportDate": latest_data["reportDate"]}
-        else:
-            return {"reportDate": current_stream_state['reportDate']}
 
     @abstractmethod
     def _get_init_report_body(self, report_date: str, record_type: str, profile) -> Dict[str, Any]:
@@ -366,3 +379,52 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         response = self._send_http_request(url, report_info.profile_id)
         raw_string = decompress(response.content).decode("utf")
         return json.loads(raw_string)
+
+
+    def _read_incremental(
+        self,
+        logger: AirbyteLogger,
+        stream_instance: Stream,
+        configured_stream: ConfiguredAirbyteStream,
+        connector_state: MutableMapping[str, Any],
+        internal_config: InternalConfig,
+    ) -> Iterator[AirbyteMessage]:
+        stream_name = configured_stream.stream.name
+        stream_state = connector_state.get(stream_name, {})
+        if stream_state:
+            logger.info(f"Setting state of {stream_name} stream to {stream_state}")
+
+        checkpoint_interval = stream_instance.state_checkpoint_interval
+        slices = stream_instance.stream_slices(
+            cursor_field=configured_stream.cursor_field, sync_mode=SyncMode.incremental, stream_state=stream_state
+        )
+        total_records_counter = 0
+        for slice in slices:
+            records = stream_instance.read_records(
+                sync_mode=SyncMode.incremental,
+                stream_slice=slice,
+                stream_state=stream_state,
+                cursor_field=configured_stream.cursor_field or None,
+            )
+
+            if not records:
+                log.info(f"connector_state: {connector_state}")
+                stream_state = connector_state.get(stream_name, {})
+
+            for record_counter, record_data in enumerate(records, start=1):
+                yield self._as_airbyte_record(stream_name, record_data)
+                stream_state = stream_instance.get_updated_state(stream_state, record_data)
+                if checkpoint_interval and record_counter % checkpoint_interval == 0:
+                    yield self._checkpoint_state(stream_name, stream_state, connector_state, logger)
+
+                total_records_counter += 1
+                # This functionality should ideally live outside of this method
+                # but since state is managed inside this method, we keep track
+                # of it here.
+                if self._limit_reached(internal_config, total_records_counter):
+                    # Break from slice loop to save state and exit from _read_incremental function.
+                    break
+
+            yield self._checkpoint_state(stream_name, stream_state, connector_state, logger)
+            if self._limit_reached(internal_config, total_records_counter):
+                return

@@ -1,29 +1,10 @@
 {"type": "LOG", "log": {"level": "INFO", "message": "Starting syncing SourceAmazonAds"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: profiles "}}
-{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 4453432259526218, "countryCode": "IN", "currencyCode": "INR", "dailyBudget": 999999999.0, "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ADYSV1AD1LMRV", "type": "seller", "name": "Sleep Ninja"}}, "emitted_at": 1633426168000}}
-{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 4072858139535231, "countryCode": "IN", "currencyCode": "INR", "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ENTITY320ZTYS6W1QAW", "type": "vendor", "name": "SN-BSSPL", "validPaymentMethod": false}}, "emitted_at": 1633426168000}}
-{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 2295823490046179, "countryCode": "IN", "currencyCode": "INR", "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ENTITY17V6UR8DB0Y5E", "type": "vendor", "name": "SN - new", "validPaymentMethod": true}}, "emitted_at": 1633426168000}}
+{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 4453432259526218, "countryCode": "IN", "currencyCode": "INR", "dailyBudget": 999999999.0, "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ADYSV1AD1LMRV", "type": "seller", "name": "Sleep Ninja"}}, "emitted_at": 1633430213000}}
+{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 4072858139535231, "countryCode": "IN", "currencyCode": "INR", "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ENTITY320ZTYS6W1QAW", "type": "vendor", "name": "SN-BSSPL", "validPaymentMethod": false}}, "emitted_at": 1633430213000}}
+{"type": "RECORD", "record": {"stream": "profiles", "data": {"profileId": 2295823490046179, "countryCode": "IN", "currencyCode": "INR", "timezone": "Asia/Kolkata", "accountInfo": {"marketplaceStringId": "A21TJRUUN4KGV", "id": "ENTITY17V6UR8DB0Y5E", "type": "vendor", "name": "SN - new", "validPaymentMethod": true}}, "emitted_at": 1633430213000}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Read 3 records from profiles stream"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: sponsored_display_campaigns "}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Read 0 records from sponsored_display_campaigns stream"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: sponsored_display_ad_groups "}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Read 0 records from sponsored_display_ad_groups stream"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: sponsored_display_product_ads "}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Read 0 records from sponsored_display_product_ads stream"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: sponsored_display_targetings "}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Read 0 records from sponsored_display_targetings stream"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Syncing stream: sponsored_display_report_stream "}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Initiating report generation for 4453432259526218 profile with campaigns type for 20211001 date"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Initiated successfully"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Waiting for 1 report(s) to be generated"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "airbyte_message: type=<Type.STATE: 'STATE'> log=None spec=None connectionStatus=None catalog=None record=None state=AirbyteStateMessage(data={'sponsored_display_report_stream': {'reportDate': '20211002'}})"}}
-{"type": "RECORD", "record": {"stream": "sponsored_display_report_stream", "data": {"type": "STATE", "log": null, "spec": null, "connectionStatus": null, "catalog": null, "record": null, "state": {"data": {"sponsored_display_report_stream": {"reportDate": "20211002"}}}}, "emitted_at": 1633426234000}}
-{"type": "LOG", "log": {"level": "INFO", "message": "All reports have been processed"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Initiating report generation for 4453432259526218 profile with campaigns type for 20211002 date"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Initiated successfully"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Waiting for 1 report(s) to be generated"}}
@@ -32,11 +13,9 @@
 {"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "airbyte_message: type=<Type.STATE: 'STATE'> log=None spec=None connectionStatus=None catalog=None record=None state=AirbyteStateMessage(data={'sponsored_display_report_stream': {'reportDate': '20211003'}})"}}
-{"type": "RECORD", "record": {"stream": "sponsored_display_report_stream", "data": {"type": "STATE", "log": null, "spec": null, "connectionStatus": null, "catalog": null, "record": null, "state": {"data": {"sponsored_display_report_stream": {"reportDate": "20211003"}}}}, "emitted_at": 1633426326000}}
 {"type": "LOG", "log": {"level": "INFO", "message": "All reports have been processed"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "Setting state of sponsored_display_report_stream stream to {}"}}
+{"type": "STATE", "state": {"data": {"sponsored_display_report_stream": {}}}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Initiating report generation for 4453432259526218 profile with campaigns type for 20211003 date"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Initiated successfully"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Waiting for 1 report(s) to be generated"}}
@@ -44,22 +23,3 @@
 {"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
 {"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "airbyte_message: type=<Type.STATE: 'STATE'> log=None spec=None connectionStatus=None catalog=None record=None state=AirbyteStateMessage(data={'sponsored_display_report_stream': {'reportDate': '20211004'}})"}}
-{"type": "RECORD", "record": {"stream": "sponsored_display_report_stream", "data": {"type": "STATE", "log": null, "spec": null, "connectionStatus": null, "catalog": null, "record": null, "state": {"data": {"sponsored_display_report_stream": {"reportDate": "20211004"}}}}, "emitted_at": 1633426389000}}
-{"type": "LOG", "log": {"level": "INFO", "message": "All reports have been processed"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Initiating report generation for 4453432259526218 profile with campaigns type for 20211004 date"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Initiated successfully"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Waiting for 1 report(s) to be generated"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "1 report(s) remained, taking 30 seconds timeout"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Checking report status, 1 report(s) remained"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "airbyte_message: type=<Type.STATE: 'STATE'> log=None spec=None connectionStatus=None catalog=None record=None state=AirbyteStateMessage(data={'sponsored_display_report_stream': {'reportDate': '20211005'}})"}}
-{"type": "RECORD", "record": {"stream": "sponsored_display_report_stream", "data": {"type": "STATE", "log": null, "spec": null, "connectionStatus": null, "catalog": null, "record": null, "state": {"data": {"sponsored_display_report_stream": {"reportDate": "20211005"}}}}, "emitted_at": 1633426482000}}
-{"type": "LOG", "log": {"level": "INFO", "message": "All reports have been processed"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Read 4 records from sponsored_display_report_stream stream"}}
-{"type": "LOG", "log": {"level": "INFO", "message": "Finished syncing SourceAmazonAds"}}

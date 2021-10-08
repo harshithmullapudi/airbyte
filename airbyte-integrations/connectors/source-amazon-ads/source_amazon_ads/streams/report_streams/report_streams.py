@@ -107,7 +107,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
     """
 
     primary_key = None
-    CHECK_INTERVAL_SECONDS = 30
+    CHECK_INTERVAL_SECONDS = 10
     # Async report generation time is 15 minutes according to docs:
     # https://advertising.amazon.com/API/docs/en-us/get-started/developer-notes
     # (Service limits section)
@@ -274,7 +274,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         self, sync_mode: SyncMode, cursor_field: List[str] = None, stream_state: Mapping[str, Any] = None
     ) -> Iterable[Optional[Mapping[str, Any]]]:
         # Amazon ads updates the data for the next 3 days
-        LOOK_BACK_WINDOW = 5
+        LOOK_BACK_WINDOW = 2
 
         if sync_mode == SyncMode.full_refresh:
             # For full refresh stream use date from config start_date field.

@@ -24,6 +24,6 @@
 from .brands_report import SponsoredBrandsReportStream
 from .display_report import SponsoredDisplayReportStream
 from .products_report import SponsoredProductsReportStream
-from .brands_video_report import SponsoredBrandsVideoReportStream
+from .brands_report_video import SponsoredBrandsReportVideoStream
 
-__all__ = ["SponsoredDisplayReportStream", "SponsoredProductsReportStream", "SponsoredBrandsReportStream", "SponsoredBrandsVideoReportStream"]
+__all__ = ["SponsoredDisplayReportStream", "SponsoredProductsReportStream", "SponsoredBrandsReportStream", "SponsoredBrandsReportVideoStream"]

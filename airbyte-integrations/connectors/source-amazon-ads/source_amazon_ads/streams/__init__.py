@@ -22,7 +22,7 @@
 # SOFTWARE.
 #
 from .profiles import Profiles
-from .report_streams import SponsoredBrandsReportStream, SponsoredDisplayReportStream, SponsoredProductsReportStream, SponsoredBrandsVideoReportStream
+from .report_streams import SponsoredBrandsReportStream, SponsoredDisplayReportStream, SponsoredProductsReportStream, SponsoredBrandsReportVideoStream
 from .sponsored_brands import SponsoredBrandsAdGroups, SponsoredBrandsCampaigns, SponsoredBrandsKeywords
 from .sponsored_display import SponsoredDisplayAdGroups, SponsoredDisplayCampaigns, SponsoredDisplayProductAds, SponsoredDisplayTargetings
 from .sponsored_products import (
@@ -52,5 +52,5 @@ __all__ = [
     "SponsoredDisplayReportStream",
     "SponsoredProductsReportStream",
     "SponsoredBrandsReportStream",
-    "SponsoredBrandsVideoReportStream",
+    "SponsoredBrandsReportVideoStream",
 ]

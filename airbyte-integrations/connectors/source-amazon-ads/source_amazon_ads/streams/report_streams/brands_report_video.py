@@ -45,7 +45,7 @@ METRICS_MAP = {
 }
 
 
-class SponsoredBrandsVideoReportStream(ReportStream):
+class SponsoredBrandsReportVideoStream(ReportStream):
     """
     https://advertising.amazon.com/API/docs/en-us/reference/sponsored-brands/2/reports
     """
@@ -60,6 +60,6 @@ class SponsoredBrandsVideoReportStream(ReportStream):
         body = {
             "reportDate": report_date,
             "creativeType": "video",
-            "reportName": "sponsored_brands_video_report_stream"
+            "reportName": "sponsored_brands_report_video_stream"
         }
         return {**body, "metrics": ",".join(metrics_list)}

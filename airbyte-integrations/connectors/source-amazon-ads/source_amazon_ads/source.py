@@ -50,7 +50,7 @@ from .streams import (
     SponsoredProductNegativeKeywords,
     SponsoredProductsReportStream,
     SponsoredProductTargetings,
-    SponsoredBrandsVideoReportStream,
+    SponsoredBrandsReportVideoStream,
 )
 from .schemas import Profile
 
@@ -108,9 +108,9 @@ class SourceAmazonAds(AbstractSource):
             SponsoredBrandsAdGroups,
             SponsoredBrandsKeywords,
             SponsoredBrandsReportStream,
-            SponsoredBrandsVideoReportStream,
+            SponsoredBrandsReportVideoStream,
         ]
-        # non_profile_stream_classes = [SponsoredDisplayProductAds, SponsoredBrandsVideoReportStream]
+        # non_profile_stream_classes = [SponsoredDisplayProductAds, SponsoredBrandsReportVideoStream]
         return [profiles_stream, *[stream_class(**stream_args) for stream_class in non_profile_stream_classes]]
 
     def spec(self, *args) -> ConnectorSpecification:

@@ -262,8 +262,8 @@ class ReportStream(BasicAmazonAdsStream, ABC):
             start_report_date = now
         
         # You cannot pull data for amazon ads more than 60 days
-        if (now - start_report_date).days > 59:
-            start_report_date = now + timedelta(days=-59)
+        if (now - start_report_date).days > 58:
+            start_report_date = now + timedelta(days=-58)
 
         for days in range(0, (now - start_report_date).days + 1):
             next_date = start_report_date + timedelta(days=days)
@@ -274,7 +274,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         self, sync_mode: SyncMode, cursor_field: List[str] = None, stream_state: Mapping[str, Any] = None
     ) -> Iterable[Optional[Mapping[str, Any]]]:
         # Amazon ads updates the data for the next 3 days
-        LOOK_BACK_WINDOW = 2
+        LOOK_BACK_WINDOW = 0
 
         if sync_mode == SyncMode.full_refresh:
             # For full refresh stream use date from config start_date field.

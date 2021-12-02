@@ -115,13 +115,14 @@ class ReportStream(BasicAmazonAdsStream, ABC):
     # Format used to specify metric generation date over Amazon Ads API.
     REPORT_DATE_FORMAT = "%Y%m%d"
     cursor_field = "reportDate"
+    tz = pendulum.timezone('Asia/Kolkata')
 
     def __init__(self, config: AmazonAdsConfig, profiles: List[Profile], authenticator: Oauth2Authenticator):
         self._authenticator = authenticator
         self._session = requests.Session()
         self._model = self._generate_model()
         # Set start date from config file, should be in UTC timezone.
-        self._start_date = pendulum.parse(config.start_date).set(tz="UTC") if config.start_date else None
+        self._start_date = pendulum.parse(config.start_date).set(tz=ReportStream.tz) if config.start_date else None
         super().__init__(config, profiles)
 
     @property
@@ -257,7 +258,8 @@ class ReportStream(BasicAmazonAdsStream, ABC):
         :return List of days from start_report_date up until today in format
         specified by REPORT_DATE_FORMAT variable.
         """
-        now = datetime.utcnow()
+        # now = datetime.utcnow()
+        now = pendulum.now(tz=ReportStream.tz)
         if not start_report_date:
             start_report_date = now
         
@@ -284,7 +286,7 @@ class ReportStream(BasicAmazonAdsStream, ABC):
             stream_state = stream_state or {}
             start_date = stream_state.get(self.cursor_field)
             if start_date:
-                start_date = pendulum.from_format(start_date, ReportStream.REPORT_DATE_FORMAT, tz="UTC")
+                start_date = pendulum.from_format(start_date, ReportStream.REPORT_DATE_FORMAT, tz=ReportStream.tz)
                 start_date += timedelta(days=-LOOK_BACK_WINDOW)
             else:
                 start_date = self._start_date
